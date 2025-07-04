@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc ; vite build",
-    "predeploy": "npm run build",        // ← соберёт проект перед выкладкой
+    "predeploy": "npm run build",        
     "deploy": "gh-pages -d dist",  
     "dev": "vite",
     "build-no-errors": "tsc ; vite build",
