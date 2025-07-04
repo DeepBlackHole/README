@@ -1,26 +1,25 @@
-import path from "path";
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import { tempo } from "tempo-devtools/dist/vite";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react-swc'
+import path from 'path'
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  base: process.env.NODE_ENV === "development" ? "/" : process.env.VITE_BASE_PATH || "/",
-  optimizeDeps: {
-    entries: ["src/main.tsx", "src/tempobook/**/*"],
-  },
-  plugins: [
-    react(),
-    tempo(),
-  ],
-  resolve: {
-    preserveSymlinks: true,
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-  server: {
-    // @ts-ignore
-    allowedHosts: true,
-  }
-});
+// ⚠️ Замените на имя репозитория на GitHub
+const repo = 'https://github.com/DeepBlackHole/README'
+
+export default defineConfig(({ mode }) => ({
+	// ▸ http://localhost:5173  → "/"
+	// ▸ https://<user>.github.io/<repo>/ → "/<repo>/"
+	base: mode === 'development' ? '/' : `/${repo}/`,
+
+	plugins: [react()],
+
+	resolve: {
+		alias: {
+			'@': path.resolve(__dirname, 'src'),
+		},
+	},
+
+	build: {
+		outDir: 'dist', // GitHub Actions «gh-pages» публикует эту папку
+		emptyOutDir: true,
+	},
+}))
