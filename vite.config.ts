@@ -1,16 +1,30 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import path from 'path'
+import fs from 'fs'
 
-// ⚠️ Замените на имя репозитория на GitHub
-const repo = 'https://github.com/DeepBlackHole/README'
+// ✅ только название репозитория
+const repo = 'README'
 
 export default defineConfig(({ mode }) => ({
-	// ▸ http://localhost:5173  → "/"
-	// ▸ https://<user>.github.io/<repo>/ → "/<repo>/"
+	// / в dev и /<repo>/ в production
 	base: mode === 'development' ? '/' : `/${repo}/`,
 
-	plugins: [react()],
+	plugins: [
+		react(),
+
+		// ────────────────────────────────────────────────
+		// Копируем index.html → 404.html для GitHub Pages
+		// ────────────────────────────────────────────────
+		{
+			name: 'github-pages-404',
+			closeBundle() {
+				const from = path.resolve(__dirname, 'dist/index.html')
+				const to = path.resolve(__dirname, 'dist/404.html')
+				fs.copyFileSync(from, to)
+			},
+		},
+	],
 
 	resolve: {
 		alias: {
@@ -19,7 +33,7 @@ export default defineConfig(({ mode }) => ({
 	},
 
 	build: {
-		outDir: 'dist', // GitHub Actions «gh-pages» публикует эту папку
+		outDir: 'dist',
 		emptyOutDir: true,
 	},
 }))
